@@ -1,0 +1,8 @@
+=== Use case 1 + 2 (connected by ProduceOrderConfirmed) ===
+Place/confirm order O1: 120 kg maize and 10 litre milk
+  status=FULFILLED outcome=FULFILLED allocations=[('A', 100), ('B', 20), ('M', 10)]
+  remaining lots: [('A', 'MAIZE', 0), ('B', 'MAIZE', 80), ('M', 'MILK', 10), ('T', 'TOMATOES', 30)]
+
+Order O2: 10 kg tomatoes (only stale lot T exists)
+  status=CONFIRMED outcome=AWAITING_STOCK
+  tomato lot T still 30 kg
