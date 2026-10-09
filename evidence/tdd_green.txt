@@ -7,7 +7,7 @@ testpaths: tests
 plugins: anyio-4.14.0
 collecting ... collected 8 items
 
-tests/test_rules.py::test_T1_produce_quantity_accepts_valid_values_and_rejects_invalid_ones PASSED [ 12%]
+tests/test_rules.py::test_T1_produce_quantity_accepts_valid_values_and_rejects_invalid_ones FAILED [ 12%]
 tests/test_rules.py::test_T2_order_confirms_from_pending_and_rejects_illegal_transitions PASSED [ 25%]
 tests/test_rules.py::test_T3_order_allows_three_lines_and_rejects_fourth_or_duplicate_produce PASSED [ 37%]
 tests/test_rules.py::test_T4_freshness_is_inclusive_on_the_last_day PASSED [ 50%]
@@ -16,4 +16,24 @@ tests/test_rules.py::test_T6_unknown_produce_or_missing_inventory_is_rejected_an
 tests/test_rules.py::test_T7_confirmed_order_is_fulfilled_and_oldest_fresh_lots_are_used_first PASSED [ 87%]
 tests/test_rules.py::test_T8_stale_stock_is_rejected_order_stays_confirmed_and_lots_are_unchanged PASSED [100%]
 
-============================== 8 passed in 0.08s ==============================
+================================== FAILURES ===================================
+___ test_T1_produce_quantity_accepts_valid_values_and_rejects_invalid_ones ____
+
+    def test_T1_produce_quantity_accepts_valid_values_and_rejects_invalid_ones():
+        # boundary: exactly 5,000 is accepted
+        valid = ProduceQuantity(100, "kg")
+        boundary = ProduceQuantity(5000, "kg")
+        assert valid.amount == 100
+        assert valid.unit == "kg"
+        assert boundary.amount == 5000
+        assert ProduceQuantity(100, "kg") == ProduceQuantity(100, "kg")
+    
+        # three rejections
+>       with pytest.raises(InvalidQuantity):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE InvalidQuantity
+
+tests\test_rules.py:37: Failed
+=========================== short test summary info ===========================
+FAILED tests/test_rules.py::test_T1_produce_quantity_accepts_valid_values_and_rejects_invalid_ones - Failed: DID NOT RAISE InvalidQuantity
+========================= 1 failed, 7 passed in 0.21s =========================
