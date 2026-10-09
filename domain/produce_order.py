@@ -17,8 +17,9 @@ class OrderStatus(Enum):
 class ProduceOrder:
     """Aggregate A / root. Identity is order_id (BR2).
 
-    Invariant (BR3): at most MAX_LINES lines, and the same produce cannot
-    appear on two lines. Callers add lines only through add_item().
+    Invariant (BR3): at most MAX_LINES lines, the same produce cannot appear
+    on two lines, and each line uses its produce's own unit. Callers add
+    lines only through add_item().
     """
 
     MAX_LINES = 3
@@ -39,6 +40,10 @@ class ProduceOrder:
     def add_item(self, produce: Produce, quantity: ProduceQuantity) -> None:
         if self.status is not OrderStatus.PENDING:
             raise InvalidOrderState("items can only be added while the order is PENDING")
+        if quantity.unit != produce.unit:
+            raise InvalidOrderLine(
+                f"{produce.catalog_name} must be ordered in {produce.unit}, got {quantity.unit}"
+            )
         if len(self._items) >= self.MAX_LINES:
             raise InvalidOrderLine(
                 f"an order may have at most {self.MAX_LINES} lines"

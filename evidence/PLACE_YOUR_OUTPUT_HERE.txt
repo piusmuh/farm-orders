@@ -1,0 +1,1 @@
+Run make_evidence.bat, then follow TDD_REDO_STEPS.txt to create tdd_red.txt and tdd_green.txt. Delete this file afterwards.

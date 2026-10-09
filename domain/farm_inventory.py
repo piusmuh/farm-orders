@@ -8,7 +8,10 @@ from domain.value_objects import ProduceQuantity
 
 
 class StockLot:
-    """Entity inside FarmInventory. Identity is lot_id; available amount changes."""
+    """Entity inside FarmInventory. Identity is lot_id; available amount changes.
+
+    The amount can only be lowered through reduce(), so a lot can never go below zero.
+    """
 
     def __init__(
         self,
@@ -17,10 +20,21 @@ class StockLot:
         available: float,
         harvest_date: date,
     ) -> None:
+        if available < 0:
+            raise ValueError("a stock lot cannot start with a negative amount")
         self.id = lot_id
         self.produce = produce
-        self.available = available
+        self._available = available
         self.harvest_date = harvest_date
+
+    @property
+    def available(self) -> float:
+        return self._available
+
+    def reduce(self, amount: float) -> None:
+        if amount < 0 or amount > self._available:
+            raise StockRejected(f"lot {self.id} cannot give {amount}")
+        self._available -= amount
 
 
 class FarmInventory:
@@ -82,6 +96,6 @@ class FarmInventory:
 
         allocations = []
         for lot, take in plan:
-            lot.available -= take
+            lot.reduce(take)
             allocations.append((lot.id, take))
         return tuple(allocations)

@@ -57,6 +57,19 @@ def test_T2_order_confirms_from_pending_and_rejects_illegal_transitions():
         empty.confirm()
     assert empty.status is OrderStatus.PENDING
 
+    cancelled = ProduceOrder("O3", "B001")
+    cancelled.add_item(Produce.MAIZE, ProduceQuantity(10, "kg"))
+    cancelled.cancel()
+    with pytest.raises(InvalidOrderState):
+        cancelled.confirm()
+    assert cancelled.status is OrderStatus.CANCELLED
+
+    unconfirmed = ProduceOrder("O4", "B001")
+    unconfirmed.add_item(Produce.MAIZE, ProduceQuantity(10, "kg"))
+    with pytest.raises(InvalidOrderState):
+        unconfirmed.fulfil()
+    assert unconfirmed.status is OrderStatus.PENDING
+
 
 def test_T3_order_allows_three_lines_and_rejects_fourth_or_duplicate_produce():
     order = ProduceOrder("O1", "B001")
@@ -74,6 +87,11 @@ def test_T3_order_allows_three_lines_and_rejects_fourth_or_duplicate_produce():
     with pytest.raises(InvalidOrderLine):
         duplicate.add_item(Produce.MAIZE, ProduceQuantity(5, "kg"))
     assert len(duplicate.items) == 1
+
+    wrong_unit = ProduceOrder("O3", "B001")
+    with pytest.raises(InvalidOrderLine):
+        wrong_unit.add_item(Produce.MAIZE, ProduceQuantity(10, "litre"))
+    assert len(wrong_unit.items) == 0
 
 
 def test_T4_freshness_is_inclusive_on_the_last_day():

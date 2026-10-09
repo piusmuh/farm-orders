@@ -5,6 +5,7 @@ from application.dtos import (
     PlaceOrderOutput,
 )
 from application.errors import InventoryNotFound, ProduceNotStocked
+from application.handlers import ReservationResult
 from application.ports import EventPublisher, InventoryRepository, OrderRepository
 from domain.produce import Produce
 from domain.produce_order import ProduceOrder
@@ -51,14 +52,16 @@ class PlaceOrderService:
         for event in order.pull_events():
             results.extend(self._events.publish(event))
 
-        reserved = any(getattr(result, "reserved", False) for result in results)
+        successes = [
+            result
+            for result in results
+            if isinstance(result, ReservationResult) and result.reserved
+        ]
+        reserved = bool(successes)
         allocations = ()
         if reserved:
             order.fulfil()
-            for result in results:
-                if getattr(result, "reserved", False):
-                    allocations = result.allocations
-                    break
+            allocations = successes[0].allocations
 
         self._orders.save(order)
         return PlaceOrderOutput(
