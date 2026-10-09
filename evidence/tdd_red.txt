@@ -36,4 +36,4 @@ E       Failed: DID NOT RAISE InvalidQuantity
 tests\test_rules.py:37: Failed
 =========================== short test summary info ===========================
 FAILED tests/test_rules.py::test_T1_produce_quantity_accepts_valid_values_and_rejects_invalid_ones - Failed: DID NOT RAISE InvalidQuantity
-========================= 1 failed, 7 passed in 0.24s =========================
+========================= 1 failed, 7 passed in 0.15s =========================

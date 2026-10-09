@@ -16,4 +16,4 @@ tests/test_rules.py::test_T6_unknown_produce_or_missing_inventory_is_rejected_an
 tests/test_rules.py::test_T7_confirmed_order_is_fulfilled_and_oldest_fresh_lots_are_used_first PASSED [ 87%]
 tests/test_rules.py::test_T8_stale_stock_is_rejected_order_stays_confirmed_and_lots_are_unchanged PASSED [100%]
 
-============================== 8 passed in 0.09s ==============================
+============================== 8 passed in 0.08s ==============================
