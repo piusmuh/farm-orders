@@ -19,4 +19,11 @@ class ProduceQuantity:
     SUPPORTED_UNITS = ("kg", "litre", "tray")
 
     def __post_init__(self) -> None:
-        pass
+        if not (0 < self.amount <= self.MAX_AMOUNT):
+            raise InvalidQuantity(
+                f"quantity must be above 0 and at most {self.MAX_AMOUNT}, got {self.amount}"
+            )
+        if self.unit not in self.SUPPORTED_UNITS:
+            raise InvalidQuantity(
+                f"unit must be one of {self.SUPPORTED_UNITS}, got {self.unit!r}"
+            )
